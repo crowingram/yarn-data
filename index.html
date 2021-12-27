@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Fetch API Sandbox</title>
+	</head>
+	<body>
+		<button id="getYarns">Get Yarn Info</button>
+		<div id="output"></div>
+
+		<script>
+			document.getElementById('getYarns').addEventListener('click', getYarns);
+
+			function getYarns() {
+				fetch('yarns.json')
+					.then((res) => res.json())
+					.then((data) => {
+						let output = '<h2>Yarns</h2>';
+						data.forEach(function (yarn) {
+							let mass = '';
+							let distance = '';
+							let gauge = '';
+
+							for (var i = 0; i < yarn.mass.length; i++) {
+								let imperial = yarn.mass[i][0];
+								let metric = yarn.mass[i][1];
+
+								if (imperial) {
+									mass += imperial + ' oz';
+
+									mass += metric ? ' / ' : ''; // if there's _also_ a metric listed, add a separator
+								}
+								if (metric) {
+									mass += metric + ' g';
+								}
+							}
+
+							for (var i = 0; i < yarn.distance.length; i++) {
+								let imperial = yarn.distance[i][0];
+								let metric = yarn.distance[i][1];
+
+								if (imperial) {
+									distance += imperial + ' yds';
+
+									distance += metric ? ' / ' : ''; // if there's _also_ a metric listed, add a separator
+								}
+								if (metric) {
+									distance += metric + ' m';
+								}
+							}
+
+							output += `
+										<h3><span class="yarn_mftr_brand">${yarn.manufacturer_brand}</span> <span class="yarn_name">${yarn.name}</span></h3>
+										<p>${yarn.published_content}</p>
+										<p>${mass}&emsp;&mdash;&emsp;${distance}</p>
+
+									</li>
+								</ul>
+							`;
+						});
+						document.getElementById('output').innerHTML = output;
+					})
+					.catch((error) => console.log(error));
+			}
+		</script>
+	</body>
+</html>
